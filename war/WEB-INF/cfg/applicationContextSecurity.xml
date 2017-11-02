@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:security="http://www.springframework.org/schema/security"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:c="http://www.springframework.org/schema/c"
+		xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd"
+		default-lazy-init="true">
+    
+	<security:http security="none" pattern="/public/*" />
+
+	<!-- Secured pages with SAML as entry point -->
+    <security:http realm="SAML" pattern="/saml/**" create-session="ifRequired" entry-point-ref="samlEntryPoint" use-expressions="false" authentication-manager-ref="samlAuthenticationManager">
+        <security:intercept-url pattern="/saml/**" access="IS_AUTHENTICATED_FULLY"/>
+        <security:custom-filter before="FIRST" ref="metadataGeneratorFilter"/>
+        <security:custom-filter after="BASIC_AUTH_FILTER" ref="samlFilter"/>
+    </security:http>
+	
+	
+	<security:http pattern="/hello/**" entry-point-ref="samlEntryPoint" authentication-manager-ref="samlAuthenticationManager">
+		<security:intercept-url pattern="/hello/**" access="IS_AUTHENTICATED_FULLY" requires-channel="https" />
+		<security:custom-filter before="FIRST" ref="metadataGeneratorFilter"/>
+		<security:headers>
+			<security:cache-control/>
+		</security:headers>
+	</security:http>
+	
+	
+	<!--
+	  - Authorization decision control.
+	  -->
+	<bean id="httpRequestAccessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+		<property name="allowIfAllAbstainDecisions" value="false"/>
+		<property name="decisionVoters">
+			<list>
+				<bean class="org.springframework.security.access.annotation.Jsr250Voter"/>
+				<bean class="org.springframework.security.access.vote.RoleVoter" p:rolePrefix=""/>
+			</list>
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "../log4j.dtd">
+
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+<!-- ================================================ -->
+<!--        A time/date based rolling appender        -->
+<!-- ================================================ -->
+
+<appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
+	<param name="File" value="${catalina.home}/logs/wisp.log"/>
+	<param name="Append" value="false"/>
+	<param name="Threshold" value="ALL"/>
+
+	<!-- Rollover at midnight each day -->
+	<param name="DatePattern" value="'.'yyyy-MM-dd'.log'"/>
+
+    <layout class="org.apache.log4j.PatternLayout">
+		<!-- The default pattern: Date Priority (Thread) [Category] Message\n -->
+		<param name="ConversionPattern" value="%d{ABSOLUTE} %-5p (%t) [%c{1}] %m%n"/>
+    </layout>
+</appender>
+<!-- ================================================ -->
+<!--        stdout/console appender        -->
+<!-- ================================================ -->
+<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+	<param name="Threshold" value="ALL"/>
+   	<layout class="org.apache.log4j.PatternLayout">
+     	<param name="ConversionPattern" value="%d{ABSOLUTE} %-5p (%t) [%c{1}] %m%n"/>
+   	</layout>
+</appender>
+<!-- ============================== -->
+<!--           Loggers              -->
+<!-- ============================== -->
+
+<logger name="frameworks" additivity="false">
+	<level value="DEBUG"/>
+	<appender-ref ref="FILE" />
+	<appender-ref ref="STDOUT" />
+</logger>
+
+<logger name="org.springframework" additivity="false">
+	<level value="DEBUG"/>
+	<appender-ref ref="FILE" />
+	<appender-ref ref="STDOUT" />
+</logger>
+
+<root>
+	<level value="ERROR"/>
+	<appender-ref ref="FILE" />
+	<appender-ref ref="STDOUT" />
+</root>
+
+</log4j:configuration>
