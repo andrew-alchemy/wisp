@@ -60,27 +60,27 @@ public class UserDetailsServiceImpl implements SAMLUserDetailsService {
 		String username = credential.getAttributeAsString("urn:oid:0.9.2342.19200300.100.1.1");
 		String country = credential.getAttributeAsString("urn:oid:2.5.6.2");
 
-		logger.info("SAML NameId:"+nameId);
-		logger.info("SAML username :"+ username );
-		logger.info("SAML preferredLanguage  :"+ preferredLanguage );
-		logger.info("SAML country:"+ country );
+		logger.debug("SAML NameId:"+nameId);
+		logger.debug("SAML username :"+ username );
+		logger.debug("SAML preferredLanguage  :"+ preferredLanguage );
+		logger.debug("SAML country:"+ country );
 		
 		List<Attribute> attrs = credential.getAttributes();
 		for (Attribute attr : attrs ) {
-			logger.info("SAML attribute" + attr.toString());
-			logger.info("SAML attribute friendly name " + attr.getFriendlyName());
-			logger.info("SAML attribute name format " + attr.getNameFormat());
-			//logger.info("SAML attribute schema location " + attr.getSchemaLocation());
-			logger.info("SAML attribute values" + attr.getAttributeValues());
+			logger.debug("SAML attribute" + attr.toString());
+			logger.debug("SAML attribute friendly name " + attr.getFriendlyName());
+			logger.debug("SAML attribute name format " + attr.getNameFormat());
+			//logger.debug("SAML attribute schema location " + attr.getSchemaLocation());
+			logger.debug("SAML attribute values" + attr.getAttributeValues());
 			for (XMLObject x : attr.getAttributeValues()) {
 				if ( x instanceof XSAnyImpl) {
 					String s = ((XSAnyImpl)x).getTextContent();
-					logger.info("attr val:" + s );
+					logger.debug("attr val:" + s );
 				}
 			}
 		}
 
-		logger.info("UserDetails:"+user);
+		logger.debug("UserDetails:"+user);
 		return user;
 	}
 }
