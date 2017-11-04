@@ -8,8 +8,10 @@ The structure follows our typical patterns so should be easy to follow.
 The SP metadata is available here:
 https://your.server.com/wisp/saml/metadata
 
-The secured application is here:
-https://your.server.com/wisp/hello/world
+The secured application is here https://your.server.com/wisp/hello/world
+There is a second endpoint in the secured application at https://your.server.com/wisp/hello/world; this can be used to test RelayState with unsolicited SSO
+e.g. for Shibboleth /profile/SAML2/Unsolicited/SSO&providerId=https://your.server.com/wisp/saml/metadata&target=/hello/otherworld
+  
 
 Accessing this endpoint will trigger the SAML mechanism. If you are not authenticated you will see an IDP selection page. Pick one and proceed to the IDPs login. Upon auccessful authentication you will see a confirmation page of the NameID, LocalEntityId (SP), RemoteEntityId (IDP) and a list of attributes provided by the IDP.
 
