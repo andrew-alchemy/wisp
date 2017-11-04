@@ -29,14 +29,14 @@
     <!--
     Use the following for interpreting RelayState coming from unsolicited response as redirect URL: -->
     <bean id="successRedirectHandler" class="org.springframework.security.saml.SAMLRelayStateSuccessHandler">
-       <property name="defaultTargetUrl" value="/success" />
+       <property name="defaultTargetUrl" value="/hello/world" />
     </bean>
 
     <!-- Handler deciding where to redirect user after failed login -->
     <bean id="failureRedirectHandler"
           class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
         <property name="useForward" value="true"/>
-        <property name="defaultFailureUrl" value="/fail"/>
+        <property name="defaultFailureUrl" value="/hello/goodbye"/>
     </bean>
 
     <!-- Handler for successful logout -->
@@ -121,19 +121,22 @@
 
     <!-- IDP Metadata configuration - paths to metadata of IDPs in circle of trust is here -->
     <!-- AST:  -->
-    <bean id="metadata" class="org.springframework.security.saml.metadata.CachingMetadataManager">
+    <bean id="metadata" class="org.springframework.security.saml.metadata.CachingMetadataManager" >
         <constructor-arg>
             <list>
             	<!-- "Our" local IDP metadata as defined in the properties files per environment -->
 				<bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate">
 					<constructor-arg>
-						<bean class="org.opensaml.saml2.metadata.provider.HTTPMetadataProvider">
+						<bean class="org.opensaml.saml2.metadata.provider.FileBackedHTTPMetadataProvider">
 							<constructor-arg>
 								<value type="java.lang.String">${frameworks.spring.saml.idp.metadata}</value>
 							</constructor-arg>
 							<constructor-arg>
 								<!-- Timeout for metadata loading in ms -->
 								<value type="int">5000</value>
+							</constructor-arg>
+							<constructor-arg>
+								<value>${webapp.root}/WEB-INF/classes/frameworks/saml/idp/idp-metadata.xml</value>
 							</constructor-arg>
 							<property name="parserPool" ref="parserPool"/>
 						</bean>

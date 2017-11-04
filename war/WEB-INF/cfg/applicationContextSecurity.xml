@@ -9,19 +9,25 @@
 			http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd"
 		default-lazy-init="true">
     
+    <!-- totally open endpoints - there aren't any but just in case -->
 	<security:http security="none" pattern="/public/*" />
 
-	<!-- Secured pages with SAML as entry point -->
+	<!-- the SAML endpoints - all secured pages with SAML as entry point NB. session created if required to allow persistence of contextholder -->
     <security:http realm="SAML" pattern="/saml/**" create-session="ifRequired" entry-point-ref="samlEntryPoint" use-expressions="false" authentication-manager-ref="samlAuthenticationManager">
         <security:intercept-url pattern="/saml/**" access="IS_AUTHENTICATED_FULLY"/>
         <security:custom-filter before="FIRST" ref="metadataGeneratorFilter"/>
         <security:custom-filter after="BASIC_AUTH_FILTER" ref="samlFilter"/>
     </security:http>
 	
-	
+	<!-- 
+	the SP application endpoints  - one secured and one unsecured for when authentication fails
+	The metadatagenerator filter MUST be present 
+	-->
 	<security:http pattern="/hello/**" entry-point-ref="samlEntryPoint" authentication-manager-ref="samlAuthenticationManager">
-		<security:intercept-url pattern="/hello/**" access="IS_AUTHENTICATED_FULLY" requires-channel="https" />
+		<security:intercept-url pattern="/hello/world" access="IS_AUTHENTICATED_FULLY" requires-channel="https" />
+		<security:intercept-url pattern="/hello/goodbye" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https" />
 		<security:custom-filter before="FIRST" ref="metadataGeneratorFilter"/>
+		<security:anonymous/>
 		<security:headers>
 			<security:cache-control/>
 		</security:headers>
@@ -29,7 +35,7 @@
 	
 	
 	<!--
-	  - Authorization decision control.
+	  - Authorization decision control... this is bog standard 
 	  -->
 	<bean id="httpRequestAccessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
 		<property name="allowIfAllAbstainDecisions" value="false"/>

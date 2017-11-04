@@ -17,6 +17,13 @@ import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
 
 
 /**
+ * The UserDetailsService used by the SAML AuthenticationProvider
+ * The purpose is to use the SAML Credential to load up an implementation of UserDetails
+ * This just uses the vanilla implementation provided by Spring (org.springframework.security.core.userdetails.User.User)
+ * It populates that POJO directly with the data found in the SAML Credential
+ * 
+ * @author Andrew
+ *
  */
 public class UserDetailsServiceImpl implements SAMLUserDetailsService {
 	private Logger logger = Logger.getLogger(UserDetailsServiceImpl.class);
@@ -37,6 +44,16 @@ public class UserDetailsServiceImpl implements SAMLUserDetailsService {
 		GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
 		authorities.add(authority);
 
+		/*
+		 * create a user whose 
+		 * -- username is the SAML NameID, 
+		 * -- password is NameID with suffix "__!" (this really doesn't matter as it isn't used for anything)
+		 * -- has a single authority ROLE_USER
+		 * 
+		 * The authority will be used in the HellowWorld controller to provide rights based access via 
+		 * the javax.security annotations e.g. @RolesAllowed("ROLE_USER") 
+		 * 
+		 */
 		User user = new User(nameId, nameId+"__!", true, true, true, true, authorities);
 
 		String preferredLanguage = credential.getAttributeAsString("urn:oid:2.16.840.1.113730.3.1.39"); // this does NOT use the friendly name "preferredLanguage"
