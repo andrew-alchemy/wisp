@@ -20,3 +20,8 @@ The TestShib IDP is preinstalled; see https://www.testshib.org/ for more details
 
 A second IDP can be defined in wisp.properties by the property frameworks.spring.saml.idp.metadata
 
+
+
+git reset --hard
+git checkout -t upstream/fs-BI-corrected
+git push -u origin fs-BI-corrected
