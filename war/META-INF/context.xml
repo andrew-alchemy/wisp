@@ -1,0 +1,24 @@
+<Context>
+<Resource
+      auth="Container"
+      name="jdbc/TH"
+      type="javax.sql.DataSource"
+      password="staging"
+      driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+      maxIdle="2"
+      maxWait="2000"
+      username="aftims"
+      url="jdbc:sqlserver://qaserver3:1433;DatabaseName=aftims;responseBuffering=adaptive"
+      maxActive="12"/>
+<Resource
+      auth="Container"
+      name="jdbc/BK"
+      type="javax.sql.DataSource"
+      password="staging"
+      driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+      maxIdle="2"
+      maxWait="2000"
+      username="aftims"
+      url="jdbc:sqlserver://qaserver3:1433;DatabaseName=aftims;responseBuffering=adaptive"
+      maxActive="12"/>      
+</Context>

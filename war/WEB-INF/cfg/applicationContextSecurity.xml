@@ -33,6 +33,15 @@
 		</security:headers>
 	</security:http>
 	
+	<security:http pattern="/read/**" entry-point-ref="samlEntryPoint" authentication-manager-ref="samlAuthenticationManager">
+		<security:intercept-url pattern="/read/world" access="IS_AUTHENTICATED_FULLY" requires-channel="https" />
+		<security:intercept-url pattern="/read/goodbye" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https" />
+		<security:custom-filter before="FIRST" ref="metadataGeneratorFilter"/>
+		<security:anonymous/>
+		<security:headers>
+			<security:cache-control/>
+		</security:headers>
+	</security:http>	
 	
 	<!--
 	  - Authorization decision control... this is bog standard 

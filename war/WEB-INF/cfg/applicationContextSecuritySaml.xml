@@ -88,9 +88,7 @@
     </bean>
 
     <!-- IDP Discovery Service -->
-    <bean id="samlIDPDiscovery" class="org.springframework.security.saml.SAMLDiscovery">
-    	<!--  this was just a sample JSP that presnets a list of IDPs for the user to select from ... -->
-        <property name="idpSelectionPath" value="/WEB-INF/jsp/idpSelection.jsp"/>
+    <bean id="samlIDPDiscovery" class="frameworks.saml.IdpDiscovery">
     </bean>
 
     <!-- Filter automatically generates default SP metadata -->
@@ -102,7 +100,7 @@
                 <property name="extendedMetadata">
                     <bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
                         <property name="idpDiscoveryEnabled" value="true"/> <!-- AST: allows IDP selection -->
-                        <property name="supportUnsolicitedResponse" value="true"/>
+                        <property name="sslHostnameVerification" value="allowAll"/>
                     </bean>
                 </property>
             </bean>
@@ -113,11 +111,9 @@
     <bean id="metadataDisplayFilter" class="org.springframework.security.saml.metadata.MetadataDisplayFilter"/>
 
     <!-- Configure HTTP Client to accept certificates from the keystore for HTTPS verification -->
-    <!--
     <bean class="org.springframework.security.saml.trust.httpclient.TLSProtocolConfigurer">
-        <property name="sslHostnameVerification" value="default"/>
+        <property name="sslHostnameVerification" value="allowAll"/>
     </bean>
-    -->
 
     <!-- IDP Metadata configuration - paths to metadata of IDPs in circle of trust is here -->
     <!-- AST:  -->
@@ -158,7 +154,59 @@
 					<constructor-arg>
 						<bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/>
 					</constructor-arg>
-				</bean>				
+				</bean>
+				<!-- works
+				<bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate">
+					<constructor-arg>
+						<bean class="org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider">
+							<constructor-arg>
+								<value type="java.io.File">classpath:frameworks/saml/idp/idp-wisetail.xml</value>
+							</constructor-arg>
+							<property name="parserPool" ref="parserPool"/>
+						</bean>
+					</constructor-arg>
+					<constructor-arg>
+						<bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/>
+					</constructor-arg>
+				</bean>
+				 -->
+				 <!-- works
+				<bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate">
+					<constructor-arg>
+						<bean class="org.opensaml.saml2.metadata.provider.FileBackedHTTPMetadataProvider">
+							<constructor-arg>
+								<value type="java.lang.String">http://burgerking.wisetaillms.com/auth/saml/idp/metadata.php</value>
+							</constructor-arg>
+							<constructor-arg>
+								<value type="int">5000</value>
+							</constructor-arg>
+							<constructor-arg>
+								<value>${webapp.root}/WEB-INF/classes/frameworks/saml/idp/idp-wisetail.xml</value>
+							</constructor-arg>
+							<property name="parserPool" ref="parserPool"/>
+						</bean>
+					</constructor-arg>
+					<constructor-arg>
+						<bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/>
+					</constructor-arg>
+				</bean>            
+				-->
+				<bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate">
+					<constructor-arg>
+						<bean class="org.opensaml.saml2.metadata.provider.HTTPMetadataProvider">
+							<constructor-arg>
+								<value type="java.lang.String">http://burgerking.wisetaillms.com/auth/saml/idp/metadata.php</value>
+							</constructor-arg>
+							<constructor-arg>
+								<value type="int">5000</value>
+							</constructor-arg>
+							<property name="parserPool" ref="parserPool"/>
+						</bean>
+					</constructor-arg>
+					<constructor-arg>
+						<bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/>
+					</constructor-arg>
+				</bean>
             </list>
         </constructor-arg>
         <!-- OPTIONAL used when one of the metadata files contains information about this service provider -->
